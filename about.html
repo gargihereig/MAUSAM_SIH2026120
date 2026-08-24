@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>About Mausam</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+	<style>
+		body {
+			font-family: 'Plus Jakarta Sans', sans-serif;
+			background: #0f0a1e;
+			color: #d8b4fe;
+		}
+		.stars {
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f0a1e 100%);
+			z-index: -2;
+		}
+		.glass-card {
+			background: rgba(46, 16, 101, 0.4);
+			backdrop-filter: blur(16px);
+			border: 1px solid rgba(216, 180, 254, 0.18);
+			border-radius: 32px;
+			box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+		}
+		.gradient-text {
+			background: linear-gradient(135deg, #f5d0fe 0%, #c084fc 100%);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+	</style>
+</head>
+<body class="min-h-screen flex flex-col">
+	<div class="stars"></div>
+
+	<nav class="px-5 py-4 md:px-8 flex justify-between items-center max-w-7xl mx-auto w-full">
+		<a href="01-Mausam - Home.html" class="flex items-center gap-3">
+			<img class="w-14 h-14 rounded-2xl object-cover border border-purple-300/40" src="titleimg.jpeg" alt="Mausam logo">
+			<span class="text-2xl font-extrabold tracking-tight text-purple-100">MAUSAM</span>
+		</a>
+		<a href="01-Mausam - Home.html" class="text-sm font-bold text-purple-300/70 hover:text-purple-100 transition-colors">Home</a>
+	</nav>
+
+	<main class="flex-grow flex items-center justify-center px-5 py-16">
+		<article class="glass-card w-full max-w-3xl p-8 md:p-16 text-center">
+			<p class="text-purple-400 text-xs font-black uppercase tracking-[0.3em] mb-5">About Mausam</p>
+			<h1 class="text-4xl md:text-6xl font-black leading-tight text-purple-50 mb-8">Weather is <span class="gradient-text">personal.</span></h1>
+			<p class="text-lg md:text-xl leading-relaxed text-purple-200/80 font-medium">
+				Mausam turns everyday weather data into insights that fit your lifestyle — from your morning run and daily commute to travel, studies, family plans, and more.
+			</p>
+			<p class="mt-8 text-lg md:text-xl leading-relaxed text-purple-300/70 font-medium">
+				Because the best forecast is one that understands you.
+			</p>
+		</article>
+	</main>
+
+	<footer class="py-5 text-center text-purple-500/40 text-[10px] font-black tracking-[0.25em] uppercase">MAUSAM</footer>
+</body>
+</html>
