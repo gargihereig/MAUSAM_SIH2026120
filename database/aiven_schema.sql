@@ -11,6 +11,7 @@ CREATE TABLE users (
     outdoor_time VARCHAR(20) NOT NULL,
     weather_interests JSON NOT NULL,
     weather_use VARCHAR(30) NOT NULL,
+    secondary_activities JSON NOT NULL DEFAULT (JSON_ARRAY()),
     location_city VARCHAR(120) NULL,
     location_latitude DECIMAL(9, 6) NULL,
     location_longitude DECIMAL(9, 6) NULL,

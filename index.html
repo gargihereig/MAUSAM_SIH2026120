@@ -1127,7 +1127,8 @@
                     daily_routine: answers[0],
                     outdoor_time: answers[1],
                     weather_interests: answers[2],
-                    weather_use: answers[3]
+                    weather_use: answers[3],
+                    secondary_activities: secondaryActivities
                 })
             });
 
@@ -1164,6 +1165,9 @@
                         authState.preferences.weatherInterests,
                         authState.preferences.weatherUse
                     ];
+                    secondaryActivities = Array.isArray(authState.preferences.secondaryActivities)
+                        ? authState.preferences.secondaryActivities
+                        : [];
                 }
                 sessionStorage.setItem('mausamLocation', JSON.stringify(location));
                 window.mausamLocation = location;

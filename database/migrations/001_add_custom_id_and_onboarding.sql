@@ -102,3 +102,19 @@ SET onboarding_completed = CASE
     THEN TRUE
     ELSE FALSE
 END;
+
+SET @column_exists = (
+    SELECT COUNT(*)
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'users'
+      AND column_name = 'secondary_activities'
+);
+SET @sql = IF(
+    @column_exists = 0,
+    'ALTER TABLE users ADD COLUMN secondary_activities JSON NOT NULL DEFAULT (JSON_ARRAY()) AFTER weather_use',
+    'SELECT 1'
+);
+PREPARE add_secondary_activities FROM @sql;
+EXECUTE add_secondary_activities;
+DEALLOCATE PREPARE add_secondary_activities;

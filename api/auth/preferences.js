@@ -22,13 +22,18 @@ module.exports = async function preferences(req, res) {
         const hasPreferences = body.dailyRoutine !== undefined || body.daily_routine !== undefined ||
             body.outdoorTime !== undefined || body.outdoor_time !== undefined ||
             body.weatherInterests !== undefined || body.weather_interests !== undefined ||
-            body.weatherUse !== undefined || body.weather_use !== undefined;
+            body.weatherUse !== undefined || body.weather_use !== undefined ||
+            body.secondaryActivities !== undefined || body.secondary_activities !== undefined;
         const validation = hasPreferences ? validatePreferences(body, false) : { value: null };
         if (validation.error) return sendJson(res, 400, { error: validation.error });
 
         const city = typeof body.locationCity === 'string' ? body.locationCity.trim() : typeof body.location_city === 'string' ? body.location_city.trim() : '';
         const latitude = Number(body.latitude ?? body.locationLatitude ?? body.location_latitude);
         const longitude = Number(body.longitude ?? body.locationLongitude ?? body.location_longitude);
+        const secondaryActivities = body.secondaryActivities ?? body.secondary_activities;
+        if (secondaryActivities !== undefined && (!Array.isArray(secondaryActivities) || secondaryActivities.some(activity => typeof activity !== 'string'))) {
+            return sendJson(res, 400, { error: 'Secondary activities are invalid' });
+        }
         const hasLocation = city && Number.isFinite(latitude) && Number.isFinite(longitude) && latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180;
         if (!validation.value && !hasLocation) return sendJson(res, 400, { error: 'Preferences or a valid location is required' });
 
@@ -39,6 +44,7 @@ module.exports = async function preferences(req, res) {
                  outdoor_time = COALESCE(?, outdoor_time),
                  weather_interests = COALESCE(?, weather_interests),
                  weather_use = COALESCE(?, weather_use),
+                 secondary_activities = COALESCE(?, secondary_activities),
                  location_city = COALESCE(?, location_city),
                  location_latitude = COALESCE(?, location_latitude),
                  location_longitude = COALESCE(?, location_longitude),
@@ -57,6 +63,7 @@ module.exports = async function preferences(req, res) {
                 values && values.outdoorTime || null,
                 values && JSON.stringify(values.weatherInterests) || null,
                 values && values.weatherUse || null,
+                secondaryActivities !== undefined ? JSON.stringify(secondaryActivities) : null,
                 hasLocation ? city : null,
                 hasLocation ? latitude : null,
                 hasLocation ? longitude : null,

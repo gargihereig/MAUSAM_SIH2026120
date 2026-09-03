@@ -29,6 +29,7 @@ module.exports = async function login(req, res) {
         const [rows] = await getPool().execute(
                     `SELECT l.user_id, l.custom_id, l.password_hash, u.name,
                         u.daily_routine, u.outdoor_time, u.weather_interests, u.weather_use,
+                        u.secondary_activities,
                         u.onboarding_completed, u.location_city,
                         u.location_latitude, u.location_longitude
              FROM login_data AS l
@@ -61,7 +62,10 @@ module.exports = async function login(req, res) {
                     dailyRoutine: account.daily_routine,
                     outdoorTime: account.outdoor_time,
                     weatherInterests: account.weather_interests,
-                    weatherUse: account.weather_use
+                    weatherUse: account.weather_use,
+                    secondaryActivities: typeof account.secondary_activities === 'string'
+                        ? JSON.parse(account.secondary_activities)
+                        : (account.secondary_activities || [])
                 }
             }
         });
