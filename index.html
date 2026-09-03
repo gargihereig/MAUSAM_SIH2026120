@@ -1525,6 +1525,8 @@
             const liveWeather = window.mausamWeatherData || {};
             const weatherCardValue = (value, format, fallback) =>
                 value !== null && value !== undefined && value !== '' ? format(value) : `Mock: ${fallback}`;
+            const insightCardValue = (value, format) =>
+                value !== null && value !== undefined && value !== '' ? format(value) : 'Unavailable';
             const personaKey = goal === 'exercise' ? 'outdoorFitness' :
                 goal === 'school' ? 'students' :
                 goal === 'commute' ? 'commuters' :
@@ -1535,16 +1537,16 @@
                 answers[0] === 'indoors' ? 'healthConscious' : 'eventPlanners';
             const personaCards = {
                 healthConscious: [
-                    { icon: 'fa-lungs', title: 'AQI', desc: `Current: ${weatherCardValue(liveWeather.aqi, value => `${liveWeather.aqiLabel || 'Index'} (${value})`, 'AQI unavailable')}`, tags: ['Air quality'] },
+                    { icon: 'fa-lungs', title: 'AQI', desc: `Current: ${insightCardValue(liveWeather.aqi, value => `${liveWeather.aqiLabel || 'Index'} (${value})`)}`, tags: ['Air quality'] },
                     { icon: 'fa-leaf', title: 'Pollen Count', desc: 'Mock: Moderate pollen levels.', tags: ['Mock value'] },
                     { icon: 'fa-sun', title: 'UV Index', desc: 'Mock: UV index 5 (moderate).', tags: ['Mock value'] },
                     { icon: 'fa-droplet', title: 'Humidity', desc: `Current: ${weatherCardValue(liveWeather.humidity, value => `${value}%`, 'humidity unavailable')}`, tags: ['Live weather'] }
                 ],
                 outdoorFitness: [
-                    { icon: 'fa-sun', title: 'Sunrise/Sunset', desc: 'Mock: Sunrise 06:12 / sunset 18:24.', tags: ['Mock value'] },
-                    { icon: 'fa-person-running', title: 'Best Running Hours', desc: 'Mock: 06:30-08:30 and 17:00-19:00.', tags: ['Mock value'] },
+                    { icon: 'fa-sun', title: 'Sunrise/Sunset', desc: `Current: ${insightCardValue(liveWeather.sunrise, value => `${value} / ${liveWeather.sunset || 'Unavailable'}`)}`, tags: ['Forecast data'] },
+                    { icon: 'fa-person-running', title: 'Best Running Hours', desc: `Calculated: ${insightCardValue(liveWeather.bestRunningHours, value => value)}`, tags: ['Weather data'] },
                     { icon: 'fa-wind', title: 'Wind Speed', desc: `Current: ${weatherCardValue(liveWeather.windSpeedKmh, value => `${value} km/h`, 'wind unavailable')}`, tags: ['Live weather'] },
-                    { icon: 'fa-temperature-high', title: 'Heat Alerts', desc: 'Mock: No heat alert currently active.', tags: ['Mock value'] }
+                    { icon: 'fa-temperature-high', title: 'Heat Alerts', desc: `Current: ${insightCardValue(liveWeather.heatAlert, value => value)}`, tags: ['Weather data'] }
                 ],
                 beachGoers: [
                     { icon: 'fa-umbrella-beach', title: 'Beach Window', desc: 'Mock: Best beach window 09:00-16:00.', tags: ['Mock value'] },
@@ -1555,30 +1557,30 @@
                 travelers: [
                     { icon: 'fa-location-dot', title: 'Saved Destination', desc: `Current: ${weatherCardValue(liveWeather.locationLabel, value => value, 'destination unavailable')}`, tags: ['Location'] },
                     { icon: 'fa-plane', title: 'Flight Weather', desc: 'Mock: Suitable conditions for travel.', tags: ['Mock value'] },
-                    { icon: 'fa-triangle-exclamation', title: 'Severe Weather Alerts', desc: 'Mock: No severe weather alerts.', tags: ['Mock value'] },
+                    { icon: 'fa-triangle-exclamation', title: 'Severe Weather Alerts', desc: `Current: ${insightCardValue(liveWeather.alertMessage, value => value)}`, tags: ['Forecast data'] },
                     { icon: 'fa-suitcase', title: 'Packing Suggestions', desc: 'Mock: Pack light layers and a rain shell.', tags: ['Mock value'] }
                 ],
                 parentsFamilies: [
                     { icon: 'fa-school', title: 'School Commute', desc: 'Mock: Comfortable conditions for the school run.', tags: ['Mock value'] },
-                    { icon: 'fa-cloud-rain', title: 'Rain Alerts', desc: 'Mock: No rain alert currently active.', tags: ['Mock value'] },
-                    { icon: 'fa-triangle-exclamation', title: 'Severe Weather Warnings', desc: 'Mock: No severe weather warnings.', tags: ['Mock value'] },
+                    { icon: 'fa-cloud-rain', title: 'Rain Alerts', desc: `Current: ${insightCardValue(liveWeather.rainProbability, value => `${value}% probability`)}`, tags: ['Forecast data'] },
+                    { icon: 'fa-triangle-exclamation', title: 'Severe Weather Warnings', desc: `Current: ${insightCardValue(liveWeather.alertMessage, value => value)}`, tags: ['Forecast data'] },
                     { icon: 'fa-people-group', title: 'Family Weather Status', desc: 'Mock: Comfortable for family plans.', tags: ['Mock value'] }
                 ],
                 agriculture: [
                     { icon: 'fa-droplet', title: 'Soil Moisture', desc: 'Mock: Soil moisture is 48%.', tags: ['Mock value'] },
-                    { icon: 'fa-cloud-rain', title: 'Rainfall Prediction', desc: `Current: ${weatherCardValue(liveWeather.precipitation, value => `${Number(value).toFixed(1)} mm`, 'rainfall unavailable')}`, tags: ['Weather data'] },
+                    { icon: 'fa-cloud-rain', title: 'Rainfall Prediction', desc: `Current: ${insightCardValue(liveWeather.rainProbability, value => `${value}% probability`)}`, tags: ['Forecast data'] },
                     { icon: 'fa-snowflake', title: 'Frost Alerts', desc: 'Mock: No frost alert currently active.', tags: ['Mock value'] },
                     { icon: 'fa-seedling', title: 'Planting Guidance', desc: 'Mock: Suitable conditions for planting.', tags: ['Mock value'] }
                 ],
                 commuters: [
                     { icon: 'fa-car', title: 'Weather + Traffic', desc: 'Mock: Allow a normal travel buffer today.', tags: ['Mock value'] },
-                    { icon: 'fa-eye', title: 'Visibility', desc: 'Mock: Visibility is good.', tags: ['Mock value'] },
-                    { icon: 'fa-cloud-bolt', title: 'Storm/Fog Alerts', desc: 'Mock: No storm or fog alert.', tags: ['Mock value'] },
-                    { icon: 'fa-road', title: 'Commute Conditions', desc: 'Mock: Roads are suitable for commuting.', tags: ['Mock value'] }
+                    { icon: 'fa-eye', title: 'Visibility', desc: `Current: ${insightCardValue(liveWeather.visibility, value => `${(value / 1000).toFixed(1)} km`)}`, tags: ['Forecast data'] },
+                    { icon: 'fa-cloud-bolt', title: 'Storm/Fog Alerts', desc: `Current: ${liveWeather.stormAlert === true ? 'Storm alert' : liveWeather.fogAlert === true ? 'Fog alert' : liveWeather.stormAlert === false && liveWeather.fogAlert === false ? 'No storm or fog alert' : 'Unavailable'}`, tags: ['Forecast data'] },
+                    { icon: 'fa-road', title: 'Commute Conditions', desc: `Current: ${insightCardValue(liveWeather.weatherCondition, value => value)}`, tags: ['Weather data'] }
                 ],
                 eventPlanners: [
                     { icon: 'fa-calendar-days', title: 'Extended Forecast', desc: 'Mock: Stable conditions through the event window.', tags: ['Mock value'] },
-                    { icon: 'fa-cloud-rain', title: 'Rain Probability', desc: 'Mock: 20% chance of rain.', tags: ['Mock value'] },
+                    { icon: 'fa-cloud-rain', title: 'Rain Probability', desc: `Current: ${insightCardValue(liveWeather.rainProbability, value => `${value}%`)}`, tags: ['Forecast data'] },
                     { icon: 'fa-temperature-half', title: 'Comfort Index', desc: 'Mock: Comfort index is high.', tags: ['Mock value'] },
                     { icon: 'fa-calendar-check', title: 'Event Weather Status', desc: 'Mock: Event plans are weather-ready.', tags: ['Mock value'] }
                 ],

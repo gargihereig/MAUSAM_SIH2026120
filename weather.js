@@ -138,6 +138,16 @@
             weatherCondition: 'Unavailable',
             precipitation: null,
             windSpeedKmh: null,
+            sunrise: null,
+            sunset: null,
+            rainProbability: null,
+            bestRunningHours: null,
+            heatAlert: null,
+            stormAlert: null,
+            fogAlert: null,
+            severeWeatherAlert: null,
+            alertMessage: null,
+            visibility: null,
             aqi: null,
             aqiLabel: 'Unavailable',
             pm25: null,
@@ -152,18 +162,23 @@
 
         try {
             const currentWeatherUrl = `${OPENWEATHER_BASE_URL}/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
-            const airPollutionUrl = `${OPENWEATHER_BASE_URL}/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-            const [currentWeather, airData] = await Promise.all([
+            const apiRequestsAvailable = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+            const [currentWeather, airData, insights] = await Promise.all([
                 fetchJson(currentWeatherUrl).catch(() => null),
-                fetchJson(airPollutionUrl).catch(() => null)
+                apiRequestsAvailable
+                    ? fetchJson(`/api/air-quality?lat=${lat}&lon=${lon}`).catch(() => null)
+                    : Promise.resolve(null),
+                apiRequestsAvailable
+                    ? fetchJson(`/api/weather-insights?lat=${lat}&lon=${lon}`).catch(() => null)
+                    : Promise.resolve(null)
             ]);
 
             const weatherMain = currentWeather && currentWeather.main ? currentWeather.main : {};
             const weatherInfo = currentWeather && currentWeather.weather && currentWeather.weather[0] ? currentWeather.weather[0] : {};
             const rainInfo = currentWeather && currentWeather.rain ? currentWeather.rain : {};
             const snowInfo = currentWeather && currentWeather.snow ? currentWeather.snow : {};
-            const airQuality = airData && airData.list && airData.list[0] ? airData.list[0] : {};
-            const airComponents = airQuality.components || {};
+            const airQuality = airData || {};
+            const airComponents = {};
             const windSpeedKmh = currentWeather && currentWeather.wind && isFiniteNumber(currentWeather.wind.speed)
                 ? Math.round(currentWeather.wind.speed * 3.6)
                 : null;
@@ -175,7 +190,7 @@
                 isFiniteNumber(snowInfo['3h']) ? snowInfo['3h'] :
                 0;
 
-            const aqiValue = airQuality.main && isFiniteNumber(airQuality.main.aqi) ? airQuality.main.aqi : null;
+            const aqiValue = isFiniteNumber(airQuality.aqi) ? airQuality.aqi : null;
 
             const weatherCondition = weatherInfo.description ? toTitleCase(weatherInfo.description) : 'Unavailable';
             const iconClass = getWeatherIconClass(weatherInfo.icon || '');
@@ -188,10 +203,20 @@
                 weatherCondition,
                 precipitation: precipitationValue,
                 windSpeedKmh,
+                sunrise: insights && insights.sunrise || null,
+                sunset: insights && insights.sunset || null,
+                rainProbability: insights && insights.rainProbability,
+                bestRunningHours: insights && insights.bestRunningHours,
+                heatAlert: insights && insights.heatAlert,
+                stormAlert: insights && insights.stormAlert,
+                fogAlert: insights && insights.fogAlert,
+                severeWeatherAlert: insights && insights.severeWeatherAlert,
+                alertMessage: insights && insights.alertMessage,
+                visibility: insights && insights.visibility,
                 aqi: aqiValue,
-                aqiLabel: aqiValue ? getAqiLabel(aqiValue) : 'Unavailable',
-                pm25: isFiniteNumber(airComponents.pm2_5) ? airComponents.pm2_5 : null,
-                pm10: isFiniteNumber(airComponents.pm10) ? airComponents.pm10 : null,
+                aqiLabel: aqiValue ? (airQuality.aqiLabel || getAqiLabel(aqiValue)) : 'Unavailable',
+                pm25: isFiniteNumber(airQuality.pm25) ? airQuality.pm25 : null,
+                pm10: isFiniteNumber(airQuality.pm10) ? airQuality.pm10 : null,
                 iconClass,
                 error: null
             };
