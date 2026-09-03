@@ -73,6 +73,11 @@ module.exports = async function login(req, res) {
         if (error.statusCode) {
             return sendJson(res, error.statusCode, { error: error.message });
         }
+        console.error('[login] failed', {
+            code: error.code,
+            message: error.message,
+            stack: error.stack
+        });
         return sendJson(res, 500, { error: 'Unable to log in' });
     }
 };
