@@ -427,6 +427,46 @@
             0%, 100% { transform: translateY(16px) rotate(12deg); }
             50% { transform: translateY(-5px) rotate(12deg); }
         }
+        /* Animated scene used only while the questionnaire is open. */
+        .atmosphere-scene { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; opacity: 0; background: radial-gradient(120% 90% at 50% 100%, #3c2c66 0%, #241b47 45%, #0b0a1f 100%); transition: opacity .6s ease, background 1.4s ease; }
+        body.questionnaire-active .atmosphere-scene { opacity: 1; }
+        body.questionnaire-active { background: #0b0a1f; }
+        body.questionnaire-active > .stars, body.questionnaire-active > .diamond-stars, body.questionnaire-active > .planet-bg, body.questionnaire-active > .fixed, body.questionnaire-active nav, body.questionnaire-active footer { opacity: 0; pointer-events: none; }
+        .atmosphere-stars { position: absolute; inset: 0; transition: opacity 1s ease; }
+        .atmosphere-star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; animation: atmosphereTwinkle 3.5s ease-in-out infinite; }
+        @keyframes atmosphereTwinkle { 0%,100% { opacity: .15; transform: scale(1); } 50% { opacity: 1; transform: scale(1.6); } }
+        .atmosphere-celestial-wrap { position: absolute; left: 50%; top: 34%; transform: translate(-50%, -50%); animation: atmosphereDrift 10s ease-in-out infinite; }
+        .atmosphere-celestial { position: relative; width: 170px; height: 170px; overflow: hidden; border-radius: 50%; background: #efe6ff; box-shadow: 0 0 60px 20px rgba(239,230,255,.55), 0 0 140px 70px rgba(239,230,255,.25), 0 0 260px 130px rgba(239,230,255,.12); transition: background 1.2s ease, box-shadow 1.2s ease; }
+        .atmosphere-celestial::after { content: ''; position: absolute; top: -14px; right: -46px; width: 150px; height: 150px; border-radius: 50%; background: #241b47; transition: opacity .8s ease; }
+        @keyframes atmosphereDrift { 0%,100% { transform: translate(-50%, -50%) translateY(0); } 50% { transform: translate(-50%, -50%) translateY(-10px); } }
+        .atmosphere-cloud { position: absolute; border-radius: 100px; background: rgba(255,255,255,.12); transition: background 1s ease; }
+        .atmosphere-cloud::before, .atmosphere-cloud::after { content: ''; position: absolute; border-radius: 100px; background: inherit; }
+        .atmosphere-cloud-a { width: 130px; height: 34px; top: 18%; left: -20%; animation: atmosphereCloudA 34s linear infinite; }
+        .atmosphere-cloud-a::before { width: 60px; height: 60px; top: -26px; left: 16px; }
+        .atmosphere-cloud-a::after { width: 44px; height: 44px; top: -16px; left: 66px; }
+        .atmosphere-cloud-b { width: 90px; height: 26px; top: 30%; left: 60%; opacity: .8; animation: atmosphereCloudB 46s linear infinite; }
+        .atmosphere-cloud-b::before { width: 44px; height: 44px; top: -18px; left: 10px; }
+        .atmosphere-cloud-b::after { width: 34px; height: 34px; top: -12px; left: 48px; }
+        @keyframes atmosphereCloudA { from { transform: translateX(0); } to { transform: translateX(160vw); } }
+        @keyframes atmosphereCloudB { from { transform: translateX(0); } to { transform: translateX(-160vw); } }
+        .atmosphere-hills { position: absolute; right: 0; bottom: 0; left: 0; width: 100%; height: 42%; fill: #150f2c; transition: fill 1s ease; }
+        .atmosphere-walker { position: absolute; bottom: 41%; left: 30%; width: 10px; height: 26px; animation: atmosphereWalk 20s ease-in-out infinite; }
+        .atmosphere-walker::before { content: ''; position: absolute; top: 0; left: 1px; width: 8px; height: 8px; border-radius: 50%; background: #0d0a1c; }
+        .atmosphere-walker::after { content: ''; position: absolute; top: 8px; left: 3px; width: 4px; height: 18px; border-radius: 2px; background: #0d0a1c; animation: atmosphereLegSway .6s ease-in-out infinite; }
+        @keyframes atmosphereWalk { 0%,100% { left: 26%; transform: scaleX(1); } 45% { left: 62%; transform: scaleX(1); } 50% { left: 62%; transform: scaleX(-1); } 95% { left: 26%; transform: scaleX(-1); } }
+        @keyframes atmosphereLegSway { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+        body.questionnaire-active.atmosphere-day .atmosphere-scene { background: radial-gradient(120% 90% at 50% 100%, #c98a6b 0%, #5a3f7a 45%, #241a45 100%); }
+        body.questionnaire-active.atmosphere-day .atmosphere-stars { opacity: 0; }
+        body.questionnaire-active.atmosphere-day .atmosphere-celestial { background: #ffd9a3; box-shadow: 0 0 70px 25px rgba(255,217,163,.6), 0 0 160px 80px rgba(255,217,163,.28), 0 0 300px 150px rgba(255,217,163,.14); }
+        body.questionnaire-active.atmosphere-day .atmosphere-celestial::after { opacity: 0; }
+        body.questionnaire-active.atmosphere-day .atmosphere-cloud { background: rgba(255,255,255,.22); }
+        body.questionnaire-active.atmosphere-day .atmosphere-hills { fill: #1c1030; }
+        .questionnaire-card { width: min(92vw, 420px); padding: 28px 26px 32px; border: 1px solid rgba(255,255,255,.08); border-radius: 28px; background: linear-gradient(165deg,#2e2568 0%,#1c1543 100%); box-shadow: 0 30px 80px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.03) inset; backdrop-filter: blur(2px); }
+        .questionnaire-option { padding: 14px 18px; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; background: linear-gradient(180deg,#8b7ce0 0%,#6e5cc9 100%); color: #f3f1fb; font-size: 14.5px; font-weight: 600; text-align: left; transition: transform .15s ease, background .15s ease, border-color .15s ease; }
+        .questionnaire-option:hover { background: linear-gradient(180deg,#a294f0 0%,#7d6bd8 100%); transform: translateY(-2px); }
+        .questionnaire-option.selected { border-color: #ffd9a3; box-shadow: 0 0 0 2px rgba(255,217,163,.24); }
+        .questionnaire-mode-toggle { position: fixed; top: 20px; right: 20px; z-index: 20; padding: 8px 16px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; background: rgba(255,255,255,.1); color: #f3f1fb; font-size: 13px; backdrop-filter: blur(6px); }
+        @media (prefers-reduced-motion: reduce) { .atmosphere-celestial-wrap, .atmosphere-cloud-a, .atmosphere-cloud-b, .atmosphere-walker, .atmosphere-walker::after, .atmosphere-star { animation: none !important; } }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -552,6 +592,16 @@
         </div>
     </section>
 
+    <!-- Animated questionnaire background -->
+    <div class="atmosphere-scene" aria-hidden="true">
+        <div class="atmosphere-stars" id="atmosphere-stars"></div>
+        <div class="atmosphere-cloud atmosphere-cloud-a"></div>
+        <div class="atmosphere-cloud atmosphere-cloud-b"></div>
+        <div class="atmosphere-celestial-wrap"><div class="atmosphere-celestial"></div></div>
+        <svg class="atmosphere-hills" viewBox="0 0 800 300" preserveAspectRatio="none"><path d="M0,180 C120,110 220,120 320,150 C420,180 480,90 620,110 C700,122 760,150 800,140 L800,300 L0,300 Z"></path></svg>
+        <div class="atmosphere-walker"></div>
+    </div>
+
     <!-- Celestial Background -->
     <div class="stars"></div>
     <div class="diamond-stars">
@@ -632,22 +682,23 @@
 
     <!-- Questionnaire (Step 2) -->
     <section id="step2" class="hidden flex-grow flex flex-col items-center justify-center p-6 relative z-10">
-        <div class="glass-card w-full max-w-2xl p-10 md:p-16 border-purple-300/10">
+        <button id="questionnaire-mode-toggle" type="button" class="questionnaire-mode-toggle" aria-pressed="false">🌙 Night</button>
+        <div class="questionnaire-card">
             <div id="q-container">
-                <div class="mb-12">
-                    <div class="flex justify-between items-end mb-4">
-                        <span id="q-progress-text" class="text-purple-300 text-xs font-black uppercase tracking-[0.2em]">Step 01 of 04</span>
-                        <span class="text-purple-500 text-[10px] font-black tracking-widest uppercase">Atmospheric Calibration</span>
+                <div class="mb-5">
+                    <div class="flex justify-between items-center mb-3 gap-3">
+                        <span id="q-progress-text" class="text-[#b9b2d9] text-[12px] font-semibold uppercase tracking-wide">Step 01 of 04</span>
+                        <span class="text-[#ff6fb0] text-[11px] font-semibold uppercase tracking-wide text-right">Atmospheric Calibration</span>
                     </div>
-                    <div class="h-2 w-full bg-indigo-950/50 rounded-full overflow-hidden border border-purple-900/30">
-                        <div id="q-progress-bar" class="h-full bg-gradient-to-r from-purple-500 to-fuchsia-400 transition-all duration-700 shadow-[0_0_15px_rgba(192,132,252,0.5)]" style="width: 20%"></div>
+                    <div class="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+                        <div id="q-progress-bar" class="h-full bg-gradient-to-r from-[#ff6fb0] to-[#c98bff] transition-all duration-700" style="width: 25%"></div>
                     </div>
                 </div>
 
                 <div id="question-content" class="transition-all duration-500">
                     <h2 id="q-title" class="text-4xl font-black mb-3 text-purple-50 leading-tight">Q1. What does a typical day look like for you?</h2>
-                    <p id="q-prompt" class="text-purple-300/60 text-sm font-bold mb-10">Choose the one that fits you best.</p>
-                    <div id="q-options" class="grid grid-cols-1 gap-5">
+                    <p id="q-prompt" class="text-[#b9b2d9] text-[13.5px] mb-5">Choose the one that fits you best.</p>
+                    <div id="q-options" class="grid grid-cols-1 gap-3">
                         <!-- Options generated by JS -->
                     </div>
                 </div>
@@ -764,14 +815,6 @@
 
                 <div id="res-activities" class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Dynamic Activities here -->
-                </div>
-
-                <div class="mt-12 glass-card p-10 bg-gradient-to-br from-purple-900/20 to-indigo-900/20 border-purple-400/10 flex flex-col md:flex-row items-center justify-between gap-8">
-                    <div class="text-center md:text-left">
-                        <h5 class="font-black text-purple-50 text-xl mb-2">Neural Forecasting Active</h5>
-                        <p class="text-sm text-purple-300/50 font-bold uppercase tracking-widest">Profile saved to the cloud</p>
-                    </div>
-                    <button class="px-10 py-4 bg-purple-50 text-indigo-950 rounded-3xl font-black text-sm hover:bg-white transition-all shadow-xl active:scale-95">Save Coordinates</button>
                 </div>
             </div>
         </div>
@@ -1022,6 +1065,23 @@
         let answers = [];
         let secondaryActivities = [];
 
+        const atmosphereStars = document.getElementById('atmosphere-stars');
+        for (let index = 0; index < 60; index++) {
+            const star = document.createElement('div');
+            star.className = 'atmosphere-star';
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 65}%`;
+            star.style.animationDelay = `${Math.random() * 3.5}s`;
+            star.style.animationDuration = `${2.5 + Math.random() * 2.5}s`;
+            atmosphereStars.appendChild(star);
+        }
+        document.getElementById('questionnaire-mode-toggle').addEventListener('click', () => {
+            const isDay = document.body.classList.toggle('atmosphere-day');
+            const toggle = document.getElementById('questionnaire-mode-toggle');
+            toggle.textContent = isDay ? '☀️ Day' : '🌙 Night';
+            toggle.setAttribute('aria-pressed', String(isDay));
+        });
+
         const questions = [
             {
                 title: "Q1. What does a typical day look like for you?",
@@ -1204,6 +1264,7 @@
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             const target = document.getElementById(`step${step}`);
             target.classList.remove('hidden');
+            document.body.classList.toggle('questionnaire-active', step === 2);
 
             if (step === 2) renderQuestion();
 
@@ -1291,8 +1352,8 @@
 
             availableOptions.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = 'p-6 bg-purple-900/20 border border-purple-400/10 rounded-[2rem] text-left hover:bg-purple-400/10 hover:border-purple-400/40 transition-all flex items-center justify-between group shadow-xl backdrop-blur-md';
-                btn.innerHTML = `<span class="font-black text-purple-200 text-lg lowercase">${opt.text}</span><i class="fa-solid fa-sparkle text-purple-500 opacity-0 group-hover:opacity-100 transition-all"></i>`;
+                btn.className = 'questionnaire-option';
+                btn.innerHTML = `<span>${opt.text}</span>`;
 
                 btn.onclick = () => {
                     // Toggle selection
@@ -1334,8 +1395,8 @@
 
             q.options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = 'p-6 bg-purple-900/20 border border-purple-400/10 rounded-[2rem] text-left hover:bg-purple-400/10 hover:border-purple-400/40 transition-all flex items-center justify-between group shadow-xl backdrop-blur-md';
-                btn.innerHTML = `<span class="font-black text-purple-200 text-lg lowercase">${opt.text}</span><i class="fa-solid fa-sparkle text-purple-500 opacity-0 group-hover:opacity-100 transition-all"></i>`;
+                btn.className = 'questionnaire-option';
+                btn.innerHTML = `<span>${opt.text}</span>`;
                 btn.onclick = () => {
                     if (q.multi) {
                         const selectedIndex = selectedOptions.indexOf(opt.value);
@@ -1362,7 +1423,7 @@
 
             if (q.multi) {
                 const continueButton = document.createElement('button');
-                continueButton.className = 'mt-3 p-5 btn-lavender rounded-[2rem] font-black text-lg transition-all';
+                continueButton.className = 'questionnaire-option mt-1 text-center';
                 continueButton.innerText = 'Continue';
                 continueButton.onclick = () => {
                     if (selectedOptions.length === 0) return;
@@ -1703,16 +1764,28 @@
 
         <div class="quick-questions">
 
-            <button onclick="quickMessage('What is the weather today?')">
-                🌤️ Today's Weather
+            <button onclick="quickMessage('Should I go outside?')">
+                🌤️ Should I go outside?
             </button>
 
-            <button onclick="quickMessage('Will it rain today?')">
-                🌧️ Rain Forecast
+            <button onclick="quickMessage('Will I need an umbrella?')">
+                ☔️ Will I need an umbrella?
             </button>
 
-            <button onclick="quickMessage('What is the temperature?')">
-                🌡️ Temperature
+            <button onclick="quickMessage('What\'s the best time to exercise?')">
+                🏃 Best time to exercise
+            </button>
+
+            <button onclick="quickMessage('What should I wear?')">
+                👕 What should I wear?
+            </button>
+
+            <button onclick="quickMessage('How\'s the air quality?')">
+                🌿 How's the air quality?
+            </button>
+
+            <button onclick="quickMessage('Are there any weather alerts?')">
+                🔔 Weather alerts
             </button>
 
         </div>
@@ -2184,8 +2257,18 @@ function getMausamResponse(message) {
 
     const text = message.toLowerCase();
     const weatherData = window.mausamWeatherData || {};
-    const hasValue = value => value !== null && value !== undefined && value !== '';
+    const hasValue = value => value !== null && value !== undefined && value !== '' && value !== 'Unavailable';
     const valueOrUnavailable = (value, suffix = '') => hasValue(value) ? `${value}${suffix}` : 'unavailable';
+    const temperature = Number(weatherData.temperatureC);
+    const feelsLike = Number(weatherData.feelsLikeC);
+    const rainProbability = Number(weatherData.rainProbability);
+    const visibility = hasValue(weatherData.visibilityKm) ? weatherData.visibilityKm : weatherData.visibility;
+    const hasRainSignal = (Number.isFinite(rainProbability) && rainProbability > 0) ||
+        (Number.isFinite(weatherData.precipitation) && weatherData.precipitation > 0) ||
+        /rain|drizzle|shower|thunderstorm/i.test(weatherData.weatherCondition || '');
+    const hasPoorAirQuality = Number.isFinite(weatherData.aqi) && weatherData.aqi >= 4;
+    const hasActiveAlert = weatherData.heatAlert === true || weatherData.stormAlert === true ||
+        weatherData.fogAlert === true || weatherData.severeWeatherAlert === true;
 
 
     if (
@@ -2200,6 +2283,118 @@ function getMausamResponse(message) {
             How can I help you?
         `;
 
+    }
+
+    if (text.includes('when') && (text.includes('rain') || text.includes('umbrella'))) {
+        const rainTime = weatherData.rainTime || weatherData.rainExpectedAt || weatherData.rainStartTime;
+        return hasValue(rainTime)
+            ? `☔️ Rain may arrive around ${rainTime}.`
+            : `☔️ The available forecast does not provide an exact rain time.`;
+    }
+
+    if (
+        text.includes('go outside') ||
+        text.includes('outdoors') ||
+        text.includes('outdoor') ||
+        text.includes('outside')
+    ) {
+        const concerns = [];
+        if (hasActiveAlert) concerns.push('there is a weather alert');
+        if (Number.isFinite(temperature) && temperature >= 32) concerns.push('it is quite hot');
+        if (Number.isFinite(temperature) && temperature <= 5) concerns.push('it is quite cold');
+        if (hasRainSignal) concerns.push('rain is possible');
+        if (hasValue(visibility) && Number(visibility) < 1000) concerns.push('visibility is reduced');
+        if (hasPoorAirQuality) concerns.push('air quality is poor');
+
+        if ((text.includes('exercise') || text.includes('running')) && (text.includes('aqi') || text.includes('air quality')) && hasValue(weatherData.aqi)) {
+            return `The air quality is ${hasValue(weatherData.aqiLabel) ? weatherData.aqiLabel : 'available'} (AQI ${weatherData.aqi}); check the other conditions before exercising outside. 🌿`;
+        }
+
+        return concerns.length > 0
+            ? `It may be better to take care outdoors right now: ${concerns.join(' and ')}. 🌦️`
+            : `Yes! Conditions look comfortable for going outside. 🌤️`;
+    }
+
+    if (
+        text.includes('umbrella') ||
+        text.includes('rain expected') ||
+        text.includes('will it rain')
+    ) {
+        if (Number.isFinite(rainProbability)) {
+            return rainProbability > 0
+                ? `Rain is possible (${rainProbability}%), so I'd carry an umbrella just in case. ☔️`
+                : `An umbrella probably won't be necessary based on the current forecast. ☀️`;
+        }
+        return hasRainSignal
+            ? `Rain is indicated in the available weather data, so I'd carry an umbrella. ☔️`
+            : hasValue(weatherData.precipitation) || hasValue(weatherData.weatherCondition)
+                ? `An umbrella probably won't be necessary based on the available conditions. ☀️`
+                : `I don't have enough rain information for that right now.`;
+    }
+
+    if (
+        text.includes('best time to exercise') ||
+        text.includes('when should i run') ||
+        text.includes('best time for a workout') ||
+        text.includes('when should i go running') ||
+        text.includes('good for running')
+    ) {
+        if (hasValue(weatherData.bestRunningHours)) {
+            return `The best time for outdoor exercise is around ${weatherData.bestRunningHours}. 🏃`;
+        }
+        if (hasActiveAlert || hasRainSignal) {
+            return `Outdoor exercise may be better later, once conditions improve. 🏃`;
+        }
+        if (Number.isFinite(temperature) || Number.isFinite(feelsLike)) {
+            return `I don't have a specific exercise window, but the available conditions can help you choose a comfortable time. 🏃`;
+        }
+        return `I don't have enough forecast information for exercise timing right now.`;
+    }
+
+    if (
+        text.includes('what should i wear') ||
+        text.includes('how should i dress') ||
+        text.includes('what clothes') ||
+        text.includes('need a jacket') ||
+        text.includes('light clothes')
+    ) {
+        if (hasRainSignal) return `Bring a light rain layer or umbrella — rain is possible. ☔️`;
+        const apparentTemperature = Number.isFinite(feelsLike) ? feelsLike : temperature;
+        if (Number.isFinite(apparentTemperature)) {
+            if (apparentTemperature >= 28) return `It's warm outside — light, breathable clothing should be comfortable. 👕`;
+            if (apparentTemperature <= 16) return `It's a little cool, so I'd recommend a light jacket or extra layer. 🧥`;
+            return `The temperature looks moderate, so comfortable layers should work well. 👕`;
+        }
+        return `I don't have enough temperature information for a clothing recommendation right now.`;
+    }
+
+    if (
+        text.includes('air quality') ||
+        text.includes('aqi') ||
+        text.includes('air safe')
+    ) {
+        if (hasValue(weatherData.aqi)) {
+            const aqiLabel = hasValue(weatherData.aqiLabel) ? weatherData.aqiLabel : 'current';
+            return `The air quality is currently ${aqiLabel} (AQI ${weatherData.aqi}). 🌿`;
+        }
+        return `I don't have air-quality information available right now.`;
+    }
+
+    if (
+        text.includes('weather alert') ||
+        text.includes('any alert') ||
+        text.includes('storm warning') ||
+        text.includes('is there fog') ||
+        text.includes('severe weather') ||
+        text.includes('weather risk')
+    ) {
+        const alerts = [];
+        if (weatherData.heatAlert === true) alerts.push('heat conditions');
+        if (weatherData.stormAlert === true) alerts.push('a storm');
+        if (weatherData.fogAlert === true) alerts.push('fog');
+        if (weatherData.severeWeatherAlert === true) alerts.push('severe weather');
+        if (alerts.length > 0) return `⚠️ There is an alert for ${alerts.join(', ')}. Consider avoiding exposed outdoor activities.`;
+        return `No major weather alerts right now. You're good to go! ✅`;
     }
 
 

@@ -69,7 +69,7 @@
                 const payload = await response.json();
                 errorMessage = payload && payload.message ? payload.message : errorMessage;
             } catch (error) {
-                errorMessage = errorMessage;
+                console.error('[weather] error response could not be parsed', { url, status: response.status });
             }
             throw new Error(errorMessage);
         }
@@ -97,6 +97,9 @@
             const cityName = region ? `${city}, ${region}` : city;
             return { cityName };
         } catch (error) {
+            console.error('[weather] reverse geocoding failed', {
+                message: error && error.message
+            });
             return { cityName: 'Your location' };
         }
     }
@@ -123,12 +126,16 @@
                 longitude: result.lon
             };
         } catch (error) {
+            console.error('[weather] city search failed', {
+                message: error && error.message
+            });
             return null;
         }
     }
 
     async function fetchWeatherData({ lat, lon, cityName }) {
         const apiKey = getApiKey();
+        const apiRequestsAvailable = window.location.protocol === 'http:' || window.location.protocol === 'https:';
 
         const fallback = {
             locationLabel: cityName || 'Your location',
@@ -156,50 +163,65 @@
             error: apiKey ? 'OpenWeather request failed' : 'Missing API key'
         };
 
-        if (!apiKey) {
+        if (!apiKey && !apiRequestsAvailable) {
+            console.error('[weather] missing browser OpenWeather API key for file-based loading');
             return fallback;
         }
 
         try {
-            const currentWeatherUrl = `${OPENWEATHER_BASE_URL}/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
-            const apiRequestsAvailable = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+            const currentWeatherUrl = apiRequestsAvailable
+                ? `/api/weather?lat=${lat}&lon=${lon}`
+                : `${OPENWEATHER_BASE_URL}/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+            const requestWithLogging = (url, label) => fetchJson(url).catch(error => {
+                console.error(`[weather] ${label} request failed`, {
+                    url,
+                    message: error && error.message
+                });
+                return null;
+            });
             const [currentWeather, airData, insights] = await Promise.all([
-                fetchJson(currentWeatherUrl).catch(() => null),
+                requestWithLogging(currentWeatherUrl, 'current weather'),
                 apiRequestsAvailable
-                    ? fetchJson(`/api/air-quality?lat=${lat}&lon=${lon}`).catch(() => null)
+                    ? requestWithLogging(`/api/air-quality?lat=${lat}&lon=${lon}`, 'air quality')
                     : Promise.resolve(null),
                 apiRequestsAvailable
-                    ? fetchJson(`/api/weather-insights?lat=${lat}&lon=${lon}`).catch(() => null)
+                    ? requestWithLogging(`/api/weather-insights?lat=${lat}&lon=${lon}`, 'weather insights')
                     : Promise.resolve(null)
             ]);
 
-            const weatherMain = currentWeather && currentWeather.main ? currentWeather.main : {};
-            const weatherInfo = currentWeather && currentWeather.weather && currentWeather.weather[0] ? currentWeather.weather[0] : {};
-            const rainInfo = currentWeather && currentWeather.rain ? currentWeather.rain : {};
-            const snowInfo = currentWeather && currentWeather.snow ? currentWeather.snow : {};
+            const normalizedCurrentWeather = currentWeather && Object.prototype.hasOwnProperty.call(currentWeather, 'temperatureC');
+            const weatherMain = !normalizedCurrentWeather && currentWeather && currentWeather.main ? currentWeather.main : {};
+            const weatherInfo = !normalizedCurrentWeather && currentWeather && currentWeather.weather && currentWeather.weather[0] ? currentWeather.weather[0] : {};
+            const rainInfo = !normalizedCurrentWeather && currentWeather && currentWeather.rain ? currentWeather.rain : {};
+            const snowInfo = !normalizedCurrentWeather && currentWeather && currentWeather.snow ? currentWeather.snow : {};
             const airQuality = airData || {};
-            const airComponents = {};
-            const windSpeedKmh = currentWeather && currentWeather.wind && isFiniteNumber(currentWeather.wind.speed)
+            const windSpeedKmh = normalizedCurrentWeather
+                ? currentWeather.windSpeedKmh
+                : currentWeather && currentWeather.wind && isFiniteNumber(currentWeather.wind.speed)
                 ? Math.round(currentWeather.wind.speed * 3.6)
                 : null;
 
-            const precipitationValue =
-                isFiniteNumber(rainInfo['1h']) ? rainInfo['1h'] :
-                isFiniteNumber(rainInfo['3h']) ? rainInfo['3h'] :
-                isFiniteNumber(snowInfo['1h']) ? snowInfo['1h'] :
-                isFiniteNumber(snowInfo['3h']) ? snowInfo['3h'] :
-                0;
+            const precipitationValue = normalizedCurrentWeather
+                ? currentWeather.precipitation
+                : currentWeather
+                    ? isFiniteNumber(rainInfo['1h']) ? rainInfo['1h'] :
+                        isFiniteNumber(rainInfo['3h']) ? rainInfo['3h'] :
+                        isFiniteNumber(snowInfo['1h']) ? snowInfo['1h'] :
+                        isFiniteNumber(snowInfo['3h']) ? snowInfo['3h'] : 0
+                    : null;
 
             const aqiValue = isFiniteNumber(airQuality.aqi) ? airQuality.aqi : null;
 
-            const weatherCondition = weatherInfo.description ? toTitleCase(weatherInfo.description) : 'Unavailable';
-            const iconClass = getWeatherIconClass(weatherInfo.icon || '');
+            const weatherCondition = normalizedCurrentWeather
+                ? currentWeather.weatherCondition
+                : weatherInfo.description ? toTitleCase(weatherInfo.description) : 'Unavailable';
+            const iconClass = normalizedCurrentWeather ? currentWeather.iconClass : getWeatherIconClass(weatherInfo.icon || '');
 
             return {
-                locationLabel: cityName || 'Your location',
-                temperatureC: isFiniteNumber(weatherMain.temp) ? weatherMain.temp : null,
-                feelsLikeC: isFiniteNumber(weatherMain.feels_like) ? weatherMain.feels_like : null,
-                humidity: isFiniteNumber(weatherMain.humidity) ? weatherMain.humidity : null,
+                locationLabel: normalizedCurrentWeather ? (currentWeather.locationLabel || cityName || 'Your location') : cityName || 'Your location',
+                temperatureC: normalizedCurrentWeather ? currentWeather.temperatureC : isFiniteNumber(weatherMain.temp) ? weatherMain.temp : null,
+                feelsLikeC: normalizedCurrentWeather ? currentWeather.feelsLikeC : isFiniteNumber(weatherMain.feels_like) ? weatherMain.feels_like : null,
+                humidity: normalizedCurrentWeather ? currentWeather.humidity : isFiniteNumber(weatherMain.humidity) ? weatherMain.humidity : null,
                 weatherCondition,
                 precipitation: precipitationValue,
                 windSpeedKmh,
@@ -212,7 +234,9 @@
                 fogAlert: insights && insights.fogAlert,
                 severeWeatherAlert: insights && insights.severeWeatherAlert,
                 alertMessage: insights && insights.alertMessage,
-                visibility: insights && insights.visibility,
+                visibility: insights && insights.visibility !== null && insights.visibility !== undefined
+                    ? insights.visibility
+                    : normalizedCurrentWeather ? currentWeather.visibility : null,
                 aqi: aqiValue,
                 aqiLabel: aqiValue ? (airQuality.aqiLabel || getAqiLabel(aqiValue)) : 'Unavailable',
                 pm25: isFiniteNumber(airQuality.pm25) ? airQuality.pm25 : null,
@@ -221,6 +245,10 @@
                 error: null
             };
         } catch (error) {
+            console.error('[weather] weather data assembly failed', {
+                message: error && error.message,
+                stack: error && error.stack
+            });
             return {
                 ...fallback,
                 error: error && error.message ? error.message : 'OpenWeather request failed'

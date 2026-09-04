@@ -66,13 +66,28 @@ module.exports = async function weatherInsights(req, res) {
     const coordinates = getCoordinates(req);
     const apiKey = process.env.OPENWEATHER_API_KEY;
     if (!coordinates) return sendJson(res, 400, { error: 'Valid latitude and longitude are required' });
-    if (!apiKey) return sendJson(res, 503, { error: 'Weather service is not configured' });
+    if (!apiKey) {
+        console.error('[weather-insights] missing OPENWEATHER_API_KEY');
+        return sendJson(res, 503, { error: 'Weather service is not configured' });
+    }
 
     try {
         const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${coordinates.lat}&lon=${coordinates.lon}&units=metric&appid=${apiKey}`);
-        if (!response.ok) return sendJson(res, 502, { error: 'Forecast service failed' });
+        if (!response.ok) {
+            const body = await response.text();
+            console.error('[weather-insights] upstream request failed', {
+                status: response.status,
+                statusText: response.statusText,
+                body: body.slice(0, 500)
+            });
+            return sendJson(res, 502, { error: 'Forecast service failed' });
+        }
         const payload = await response.json();
         const forecast = Array.isArray(payload.list) ? payload.list : [];
+        if (!forecast.length) {
+            console.error('[weather-insights] response missing forecast list entries');
+            return sendJson(res, 502, { error: 'Forecast data unavailable' });
+        }
         const city = payload.city || {};
         const nextDay = forecast.slice(0, 8);
         const rainProbability = nextDay.length ? Math.round(Math.max(...nextDay.map(item => Number(item.pop) || 0)) * 100) : null;
@@ -99,7 +114,11 @@ module.exports = async function weatherInsights(req, res) {
             visibility: visibilityValues.length ? Math.min(...visibilityValues) : null
         });
     } catch (error) {
-        console.error('[weather-insights] request failed', { code: error && error.code, message: error && error.message });
+        console.error('[weather-insights] request failed', {
+            name: error && error.name,
+            code: error && error.code,
+            message: error && error.message
+        });
         return sendJson(res, 502, { error: 'Forecast service failed' });
     }
 };
