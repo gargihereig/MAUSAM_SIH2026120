@@ -747,15 +747,7 @@
                     </div>
                 </div>
 
-                <div class="glass-card p-10 bg-indigo-950/20">
-                    <h4 class="font-black text-purple-50 mb-6 flex items-center uppercase tracking-widest text-xs">
-                        <i class="fa-solid fa-star-and-crescent text-purple-400 mr-3"></i>
-                        Stellar Analysis
-                    </h4>
-                    <p id="res-analysis" class="text-sm text-purple-300/70 leading-relaxed font-semibold italic">
-                        The stars suggest a moment of quiet reflection. Your internal rhythm is harmonizing with the cooling breeze...
-                    </p>
-                </div>
+                <div id="mausam-notify-slot"></div>
             </div>
 
             <!-- Right: Activity Feed -->
@@ -1439,7 +1431,6 @@
                 exercise: {
                     title: 'Your Active Forecast',
                     subtitle: 'Built for movement and momentum',
-                    analysis: 'Your forecast is tuned for an active day. These windows and ideas help you move comfortably while making the most of the conditions.',
                     activities: [
                         { icon: 'fa-person-running', title: 'Best running window', desc: 'A cooler, clearer stretch for a steady outdoor run.', tags: ['Cardio', 'Outdoor'] },
                         { icon: 'fa-bicycle', title: 'Cycling route', desc: 'Follow a low-wind route and keep your ride smooth and comfortable.', tags: ['Cycling', 'Low wind'] },
@@ -1450,7 +1441,6 @@
                 school: {
                     title: 'Your Campus Forecast',
                     subtitle: 'Balanced for school and study plans',
-                    analysis: 'Your forecast is organized around a focused school day, with comfortable travel windows and calm conditions for learning.',
                     activities: [
                         { icon: 'fa-school', title: 'Campus commute', desc: 'A comfortable window to get to class without weather surprises.', tags: ['School', 'Commute'] },
                         { icon: 'fa-book-open', title: 'Study outside', desc: 'A gentle outdoor study window for a change of scenery.', tags: ['Focus', 'Fresh air'] },
@@ -1461,7 +1451,6 @@
                 commute: {
                     title: 'Your Commute Forecast',
                     subtitle: 'Clearer routes for the day ahead',
-                    analysis: 'Your forecast is focused on predictable travel, highlighting the conditions that can change your route, timing, or comfort.',
                     activities: [
                         { icon: 'fa-car', title: 'Leave-time window', desc: 'Choose the clearest stretch for a calmer drive or ride.', tags: ['Travel', 'Timing'] },
                         { icon: 'fa-cloud-rain', title: 'Rain-ready route', desc: 'Check for wet conditions before setting out and allow extra time.', tags: ['Rain', 'Caution'] },
@@ -1472,7 +1461,6 @@
                 trips: {
                     title: 'Your Travel Forecast',
                     subtitle: 'Made for the next leg of the journey',
-                    analysis: 'Your forecast is shaped around exploring comfortably, with practical prompts for changing conditions and memorable windows along the way.',
                     activities: [
                         { icon: 'fa-map-location-dot', title: 'Explore window', desc: 'Find the best stretch for walking through a new neighborhood.', tags: ['Explore', 'Outdoor'] },
                         { icon: 'fa-suitcase', title: 'Pack smart', desc: 'Choose layers and essentials that match the temperature and rain risk.', tags: ['Packing', 'Ready'] },
@@ -1483,7 +1471,6 @@
                 beach: {
                     title: 'Your Water-Day Forecast',
                     subtitle: 'Sun, shore, and smooth plans',
-                    analysis: 'Your forecast is tuned for time near the water, balancing sunlight, wind, tides, and comfort for a better day outside.',
                     activities: [
                         { icon: 'fa-umbrella-beach', title: 'Beach window', desc: 'Find a comfortable time for sand, sun, and a slower pace.', tags: ['Beach', 'Sun'] },
                         { icon: 'fa-water', title: 'Tide check', desc: 'Review waves and tides before planning time in or near the water.', tags: ['Water', 'Tides'] },
@@ -1494,7 +1481,6 @@
                 gardening: {
                     title: 'Your Growing Forecast',
                     subtitle: 'Rooted in soil, rain, and sunlight',
-                    analysis: 'Your forecast is focused on plant and crop care, bringing soil moisture, rainfall, sunlight, and comfortable work windows together.',
                     activities: [
                         { icon: 'fa-seedling', title: 'Garden window', desc: 'A comfortable time to tend beds, pots, or young plants.', tags: ['Plants', 'Outdoor'] },
                         { icon: 'fa-cloud-rain', title: 'Rain planning', desc: 'Use the rain outlook to decide whether watering can wait.', tags: ['Rain', 'Watering'] },
@@ -1505,7 +1491,6 @@
                 family: {
                     title: 'Your Family-Day Forecast',
                     subtitle: 'Comfortable plans for everyone',
-                    analysis: 'Your forecast is arranged around flexible family plans, with easy options for fresh air, breaks, and changing conditions.',
                     activities: [
                         { icon: 'fa-park', title: 'Park time', desc: 'A comfortable window for a relaxed family outing outdoors.', tags: ['Family', 'Park'] },
                         { icon: 'fa-gamepad', title: 'Indoor backup', desc: 'Keep a simple indoor plan ready in case the weather turns.', tags: ['Flexible', 'Indoor'] },
@@ -1516,7 +1501,6 @@
                 outfit: {
                     title: 'Your What-to-Wear Forecast',
                     subtitle: 'Small details that make the day easier',
-                    analysis: 'Your forecast is distilled into practical choices for layers, footwear, and what to carry as conditions shift.',
                     activities: [
                         { icon: 'fa-shirt', title: 'Layer suggestion', desc: 'Choose a flexible layer that works across the day’s temperature changes.', tags: ['Layers', 'Comfort'] },
                         { icon: 'fa-cloud-sun', title: 'Weather shift', desc: 'Keep a light rain layer or extra layer close if conditions vary.', tags: ['Changeable', 'Ready'] },
@@ -1597,7 +1581,6 @@
                 ]
             };
             resActivities = (personaCards[personaKey] || personaCards.outdoorFitness).slice(0, 4);
-            document.getElementById('res-analysis').innerText = profile.analysis;
 
             // Add secondary activities if selected
             let titleParts = [profile.title];
