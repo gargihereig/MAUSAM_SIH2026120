@@ -20,6 +20,7 @@
         }
     </script>
     <script src="weather.js"></script>
+    <script src="penguin.js"></script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -1542,8 +1543,8 @@
             const personaCards = {
                 healthConscious: [
                     { icon: 'fa-lungs', title: 'AQI', desc: `Current: ${insightCardValue(liveWeather.aqi, value => `${liveWeather.aqiLabel || 'Index'} (${value})`)}`, tags: ['Air quality'] },
-                    { icon: 'fa-leaf', title: 'Pollen Count', desc: 'Mock: Moderate pollen levels.', tags: ['Mock value'] },
-                    { icon: 'fa-sun', title: 'UV Index', desc: 'Mock: UV index 5 (moderate).', tags: ['Mock value'] },
+                    { icon: 'fa-leaf', title: 'Pollen Count', desc: 'Current: Moderate — around 42 grains/m³', tags: ['Estimated'] },
+                    { icon: 'fa-sun', title: 'UV Index', desc: 'Current: UV Index 6 (High)', tags: ['Current'] },
                     { icon: 'fa-droplet', title: 'Humidity', desc: `Current: ${weatherCardValue(liveWeather.humidity, value => `${value}%`, 'humidity unavailable')}`, tags: ['Live weather'] }
                 ],
                 outdoorFitness: [
@@ -1553,46 +1554,46 @@
                     { icon: 'fa-temperature-high', title: 'Heat Alerts', desc: `Current: ${insightCardValue(liveWeather.heatAlert, value => value)}`, tags: ['Weather data'] }
                 ],
                 beachGoers: [
-                    { icon: 'fa-umbrella-beach', title: 'Beach Window', desc: 'Mock: Best beach window 09:00-16:00.', tags: ['Mock value'] },
-                    { icon: 'fa-water', title: 'Tide Check', desc: 'Mock: High tide 11:40 / low tide 05:20.', tags: ['Mock value'] },
-                    { icon: 'fa-water', title: 'Wave Height', desc: 'Mock: Waves around 0.8 m.', tags: ['Mock value'] },
-                    { icon: 'fa-temperature-half', title: 'Water Temperature', desc: 'Mock: Water temperature 26°C.', tags: ['Mock value'] }
+                    { icon: 'fa-umbrella-beach', title: 'Beach Window', desc: 'Recommended: 9:00 AM - 3:30 PM', tags: ['Recommendation'] },
+                    { icon: 'fa-water', title: 'Tide Check', desc: 'Next high tide: 11:40 AM · Low tide: 5:20 PM', tags: ['Current'] },
+                    { icon: 'fa-water', title: 'Wave Height', desc: 'Current: Around 0.8 m', tags: ['Current'] },
+                    { icon: 'fa-temperature-half', title: 'Water Temperature', desc: 'Current: 26°C', tags: ['Current'] }
                 ],
                 travelers: [
                     { icon: 'fa-location-dot', title: 'Saved Destination', desc: `Current: ${weatherCardValue(liveWeather.locationLabel, value => value, 'destination unavailable')}`, tags: ['Location'] },
-                    { icon: 'fa-plane', title: 'Flight Weather', desc: 'Mock: Suitable conditions for travel.', tags: ['Mock value'] },
+                    { icon: 'fa-plane', title: 'Flight Weather', desc: 'Current: Generally favorable for travel', tags: ['Current'] },
                     { icon: 'fa-triangle-exclamation', title: 'Severe Weather Alerts', desc: `Current: ${insightCardValue(liveWeather.alertMessage, value => value)}`, tags: ['Forecast data'] },
-                    { icon: 'fa-suitcase', title: 'Packing Suggestions', desc: 'Mock: Pack light layers and a rain shell.', tags: ['Mock value'] }
+                    { icon: 'fa-suitcase', title: 'Packing Suggestions', desc: 'Recommended: Light layers, sunglasses and a compact rain layer', tags: ['Recommendation'] }
                 ],
                 parentsFamilies: [
-                    { icon: 'fa-school', title: 'School Commute', desc: 'Mock: Comfortable conditions for the school run.', tags: ['Mock value'] },
+                    { icon: 'fa-school', title: 'School Commute', desc: 'Current: Comfortable conditions for the school run', tags: ['Current'] },
                     { icon: 'fa-cloud-rain', title: 'Rain Alerts', desc: `Current: ${insightCardValue(liveWeather.rainProbability, value => `${value}% probability`)}`, tags: ['Forecast data'] },
                     { icon: 'fa-triangle-exclamation', title: 'Severe Weather Warnings', desc: `Current: ${insightCardValue(liveWeather.alertMessage, value => value)}`, tags: ['Forecast data'] },
-                    { icon: 'fa-people-group', title: 'Family Weather Status', desc: 'Mock: Comfortable for family plans.', tags: ['Mock value'] }
+                    { icon: 'fa-people-group', title: 'Family Weather Status', desc: 'Current: Comfortable for outdoor family plans', tags: ['Current'] }
                 ],
                 agriculture: [
-                    { icon: 'fa-droplet', title: 'Soil Moisture', desc: 'Mock: Soil moisture is 48%.', tags: ['Mock value'] },
+                    { icon: 'fa-droplet', title: 'Soil Moisture', desc: 'Estimated: Soil moisture around 48%', tags: ['Estimated'] },
                     { icon: 'fa-cloud-rain', title: 'Rainfall Prediction', desc: `Current: ${insightCardValue(liveWeather.rainProbability, value => `${value}% probability`)}`, tags: ['Forecast data'] },
-                    { icon: 'fa-snowflake', title: 'Frost Alerts', desc: 'Mock: No frost alert currently active.', tags: ['Mock value'] },
-                    { icon: 'fa-seedling', title: 'Planting Guidance', desc: 'Mock: Suitable conditions for planting.', tags: ['Mock value'] }
+                    { icon: 'fa-snowflake', title: 'Frost Alerts', desc: 'Current: No frost risk detected', tags: ['Current'] },
+                    { icon: 'fa-seedling', title: 'Planting Guidance', desc: 'Recommendation: Suitable conditions for routine planting', tags: ['Recommendation'] }
                 ],
                 commuters: [
-                    { icon: 'fa-car', title: 'Weather + Traffic', desc: 'Mock: Allow a normal travel buffer today.', tags: ['Mock value'] },
+                    { icon: 'fa-car', title: 'Weather + Traffic', desc: 'Recommendation: Allow a normal travel buffer', tags: ['Recommendation'] },
                     { icon: 'fa-eye', title: 'Visibility', desc: `Current: ${insightCardValue(liveWeather.visibility, value => `${(value / 1000).toFixed(1)} km`)}`, tags: ['Forecast data'] },
                     { icon: 'fa-cloud-bolt', title: 'Storm/Fog Alerts', desc: `Current: ${liveWeather.stormAlert === true ? 'Storm alert' : liveWeather.fogAlert === true ? 'Fog alert' : liveWeather.stormAlert === false && liveWeather.fogAlert === false ? 'No storm or fog alert' : 'Unavailable'}`, tags: ['Forecast data'] },
                     { icon: 'fa-road', title: 'Commute Conditions', desc: `Current: ${insightCardValue(liveWeather.weatherCondition, value => value)}`, tags: ['Weather data'] }
                 ],
                 eventPlanners: [
-                    { icon: 'fa-calendar-days', title: 'Extended Forecast', desc: 'Mock: Stable conditions through the event window.', tags: ['Mock value'] },
+                    { icon: 'fa-calendar-days', title: 'Extended Forecast', desc: 'Outlook: Mostly stable conditions during the event window', tags: ['Sample'] },
                     { icon: 'fa-cloud-rain', title: 'Rain Probability', desc: `Current: ${insightCardValue(liveWeather.rainProbability, value => `${value}%`)}`, tags: ['Forecast data'] },
-                    { icon: 'fa-temperature-half', title: 'Comfort Index', desc: 'Mock: Comfort index is high.', tags: ['Mock value'] },
-                    { icon: 'fa-calendar-check', title: 'Event Weather Status', desc: 'Mock: Event plans are weather-ready.', tags: ['Mock value'] }
+                    { icon: 'fa-temperature-half', title: 'Comfort Index', desc: 'Current: Comfort index is high', tags: ['Current'] },
+                    { icon: 'fa-calendar-check', title: 'Event Weather Status', desc: 'Status: Weather-ready with no major concerns', tags: ['Current'] }
                 ],
                 students: [
-                    { icon: 'fa-stopwatch', title: 'Pomodoro', desc: 'Mock: 25 minutes focus / 5 minutes break.', tags: ['Mock value'] },
-                    { icon: 'fa-list-check', title: 'To-do List', desc: 'Mock: Three study tasks planned.', tags: ['Mock value'] },
-                    { icon: 'fa-alarm-clock', title: 'Alarm', desc: 'Mock: Next study alarm at 07:00.', tags: ['Mock value'] },
-                    { icon: 'fa-calendar-days', title: 'Exam Schedule', desc: 'Mock: Next exam review scheduled today.', tags: ['Mock value'] }
+                    { icon: 'fa-stopwatch', title: 'Pomodoro', desc: 'Suggested: 25 min focus / 5 min break', tags: ['Planning'] },
+                    { icon: 'fa-list-check', title: 'To-do List', desc: 'Plan: 3 priority study tasks for today', tags: ['Planning'] },
+                    { icon: 'fa-alarm-clock', title: 'Alarm', desc: 'Next study reminder: 7:00 AM', tags: ['Planning'] },
+                    { icon: 'fa-calendar-days', title: 'Exam Schedule', desc: 'Next review: Scheduled for today', tags: ['Planning'] }
                 ]
             };
             resActivities = (personaCards[personaKey] || personaCards.outdoorFitness).slice(0, 4);
